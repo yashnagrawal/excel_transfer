@@ -5,11 +5,6 @@ import openpyxl
 # open the A1 sheet
 workbook = openpyxl.load_workbook('csf314-2023-Marks.xlsx')
 
-# get the sheet A1
-sheet_a1 = workbook['A1']
-
-# get the sheet A2
-sheet_a2 = workbook['A2']
 
 # get the sheet "Registered List"
 sheet_registered_list = workbook['Registered List']
@@ -53,7 +48,8 @@ def search_in_registered_list(name):
     return ans_row
 
 
-def transfer_to_registered_list(sheet, max_row):
+def transfer_to_registered_list(sheet_name, max_row, input_marks_col_name, output_marks_col_name):
+    sheet = workbook[sheet_name]
     # iterate over rows 2 to 48 of Column B C Q
     for row in range(2, max_row):
         # get the student1 name
@@ -62,7 +58,7 @@ def transfer_to_registered_list(sheet, max_row):
         student2_name = sheet['C' + str(row)].value
 
         # get the marks of both in Q
-        marks = sheet['Q' + str(row)].value
+        marks = sheet[input_marks_col_name + str(row)].value
 
         if student1_name != "-" and student1_name != "":
             # search for student1 in the registered list
@@ -72,7 +68,7 @@ def transfer_to_registered_list(sheet, max_row):
                 print(student1_name)
             else:
                 # set the marks of student1 in the registered list
-                sheet_registered_list['G' + str(
+                sheet_registered_list[output_marks_col_name + str(
                     registered_list_row)].value = marks
 
         if student2_name != "-" and student2_name != "":
@@ -83,14 +79,14 @@ def transfer_to_registered_list(sheet, max_row):
                 print(student2_name)
             else:
                 # set the marks of student2 in the registered list
-                sheet_registered_list['G' + str(
+                sheet_registered_list[output_marks_col_name + str(
                     registered_list_row)].value = marks
 
 
 # call main function
 if __name__ == "__main__":
-    transfer_to_registered_list(sheet_a1, 50)
-    transfer_to_registered_list(sheet_a2, 46)
+    transfer_to_registered_list("A1", 50, 'Q', 'G')
+    transfer_to_registered_list("A2", 46, 'S', 'H')
 
     # save the workbook
     workbook.save('csf314-2023-Marks.xlsx')
